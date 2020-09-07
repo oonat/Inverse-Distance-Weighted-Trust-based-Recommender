@@ -1,0 +1,4 @@
+from tacorec.distance_oriented_recommender.trust_based_recommender import TrustBasedRecommender
+
+recommender = TrustBasedRecommender()
+recommender.make_recommendations()
