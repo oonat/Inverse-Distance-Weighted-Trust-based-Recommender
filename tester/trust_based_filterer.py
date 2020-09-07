@@ -4,8 +4,10 @@ from tacorec.database import neo4j_interface
 from tacorec.config.config_parser import ConfigParser
 from tacorec.network_filtering.network_filterer import NetworkFilterer
 
-from tacorec.distance_oriented_recommender.graph import Graph
+from tacorec.distance_oriented_recommender.tester.graph import Graph
 from scipy.sparse import csr_matrix
+
+import random
 
 
 class TrustBasedFilterer(object):
@@ -32,8 +34,6 @@ class TrustBasedFilterer(object):
 
 
 		self._create_customers_versus_products_table()
-		self._graph = Graph(self._customers_versus_products_table)
-		self._create_weight_matrix()
 
 
 	def _create_customers_versus_products_table(self):
@@ -134,7 +134,24 @@ class TrustBasedFilterer(object):
 		return coefficient_list
 
 
+
+	def decide_deleted_product(self, customer):
+
+		customer_row = self._customers_versus_products_table[customer,:]
+		bought_products = customer_row.nonzero()[0]
+
+		return random.choice(bought_products)
+
+
 	def make_recommendation_to_customer(self, customer):
+
+		deleted_product = self.decide_deleted_product(customer)
+		deleted_product_id = self._unique_products[deleted_product]
+
+		self._customers_versus_products_table[customer][deleted_product] = 0
+
+		self._graph = Graph(self._customers_versus_products_table)
+		self._create_weight_matrix()
 
 		products_with_coefficients = self._calculate_product_coefficients(customer)
 		products_with_coefficients.sort(key = lambda x: x[1], reverse=True)  
@@ -146,11 +163,12 @@ class TrustBasedFilterer(object):
 			product_list.append(product)
 			coefficient_list.append(coefficient)
 
-		return (self._unique_customers[customer], product_list, coefficient_list)
+		self._customers_versus_products_table[customer][deleted_product] = 1
+
+		return (self._unique_customers[customer], deleted_product_id, product_list, coefficient_list)
 
 
 	def make_recommendations(self):
 
-		for customer in range(self._unique_customers.shape[0]):
-			print(customer, " - ", self._unique_customers.shape[0])
+		for customer in range(self._unique_customers.shape[0]-200):
 			yield self.make_recommendation_to_customer(customer)

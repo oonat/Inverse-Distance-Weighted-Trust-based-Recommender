@@ -42,14 +42,19 @@ class TrustBasedRecommender(object):
 	def _add_recommendations(self, recommendations):
 
 		for customer_id, products, recommendation_coefficients in recommendations:
-			print(products)
+			for i, recommendation_coefficient in enumerate(recommendation_coefficients):
+				self._add_recommendation(
+					customer_id,
+					products[i],
+					recommendation_coefficient,
+				)
 
 	def _add_recommendation(self, customer_id, product_id, recommendation_coefficient):
 
 		self._interface.create_relationship(
 			node_labels=("Product", "Customer"),
 			node_ids=(product_id, customer_id),
-			relationship=("RECOMMENDEDBYREF", "right"),
+			relationship=("RECOMMENDED", "right"),
 			properties={
 				"recommendation_coefficient": recommendation_coefficient,
 			},
