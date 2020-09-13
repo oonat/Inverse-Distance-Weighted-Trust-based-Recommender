@@ -14,15 +14,16 @@ class TrustBasedFilterer(object):
 
 		self._interface = neo4j_interface.ApplicationInterface()
 
-		""" get the parameters from the config file """
 		config = ConfigParser("tacorec.toml").load()
 
 		self._number_of_recommendations = \
 			config["trust_based_recommendation"]["recommendations_per_user"]
 
-		filtering_threshold = 3 
-		"""config["network_filtering"]["filtering_threshold"]"""
+		self._weight_ratio = \
+			config["trust_based_recommendation"]["weight_ratio"]
 
+		filtering_threshold =\
+			config["network_filtering"]["filtering_threshold"]
 
 		self._sales = np.array(sales, dtype=np.uint32)
 		network_filterer = NetworkFilterer(self._sales, filtering_threshold)
@@ -99,21 +100,15 @@ class TrustBasedFilterer(object):
 				self._similarity_matrix[i][j] = self._similarity_matrix[j][i] = similarity_coefficient
 
 
-		self._similarity_matrix = \
-			csr_matrix(self._similarity_matrix).multiply(self._graph._customer_filterer_matrix)
+		self._similarity_matrix *= self._graph._customer_filterer_matrix
 
 
 	def _create_weight_matrix(self):
 
 		self._create_similarity_matrix()
 
-		numerator = 2 * self._graph._customer_trust_matrix * self._similarity_matrix
-		denominator = self._graph._customer_trust_matrix + self._similarity_matrix
-
 		self._weight_matrix = \
-			np.array(numerator / denominator)
-
-		self._weight_matrix[np.isnan(self._weight_matrix)] = 0
+			self._weight_ratio*self._similarity_matrix + (1-self._weight_ratio)*self._graph._customer_trust_matrix
 
 
 	def _calculate_product_coefficients(self, customer):
@@ -152,5 +147,4 @@ class TrustBasedFilterer(object):
 	def make_recommendations(self):
 
 		for customer in range(self._unique_customers.shape[0]):
-			print(customer, " - ", self._unique_customers.shape[0])
 			yield self.make_recommendation_to_customer(customer)

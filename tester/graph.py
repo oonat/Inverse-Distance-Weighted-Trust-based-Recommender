@@ -48,4 +48,9 @@ class Graph(object):
 	def _create_customer_trust_matrix(self):
 
 		self._customer_trust_matrix = \
-			csr_matrix(np.reciprocal(self._distance_matrix, where=self._distance_matrix!=0)).multiply(self._customer_filterer_matrix)
+			np.reciprocal(self._distance_matrix, out=np.zeros_like(self._distance_matrix), where=self._distance_matrix!=0)
+
+		self._customer_trust_matrix *= self._customer_filterer_matrix
+
+		print(self._customer_trust_matrix)
+		

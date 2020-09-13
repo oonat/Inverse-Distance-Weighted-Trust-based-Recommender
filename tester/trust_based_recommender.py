@@ -44,7 +44,7 @@ class TrustBasedRecommender(object):
 		for customer_id, deleted_product_id, products, recommendation_coefficients in recommendations:
 			print(i," - ", 282)
 			print(recommendation_coefficients)
-			successful = 1 if deleted_product_id in products else 0
+			successful = 1.0/(products.index(deleted_product_id)+1) if deleted_product_id in products else 0
 			total += successful
 			number_of_customers += 1
 			i+=1
