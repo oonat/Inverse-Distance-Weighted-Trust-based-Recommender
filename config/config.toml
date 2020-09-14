@@ -1,0 +1,16 @@
+title = "Configurations"
+
+[trust_based_recommendation]
+recommendations_per_user = 5
+weight_ratio = 0.75
+
+[network_filtering]
+filtering_threshold = 2
+
+[graph]
+max_distance = 3
+
+[database.neo4j]
+uri = ""
+user = ""
+password = ""

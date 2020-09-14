@@ -1,20 +1,15 @@
 import numpy as np
-
-from tacorec.database import neo4j_interface
-from tacorec.config.config_parser import ConfigParser
-from tacorec.network_filtering.network_filterer import NetworkFilterer
-
-from tacorec.distance_oriented_recommender.graph import Graph
-from scipy.sparse import csr_matrix
+from distance_weighted_recommender.config.parser import Parser
+from distance_weighted_recommender.network_filtering.network_filterer \
+	import NetworkFilterer
+from distance_weighted_recommender.graph import Graph
 
 
 class TrustBasedFilterer(object):
 
 	def __init__(self, sales):
 
-		self._interface = neo4j_interface.ApplicationInterface()
-
-		config = ConfigParser("tacorec.toml").load()
+		config = Parser("config.toml").load()
 
 		self._number_of_recommendations = \
 			config["trust_based_recommendation"]["recommendations_per_user"]
@@ -57,7 +52,7 @@ class TrustBasedFilterer(object):
 		)
 
 		for i, row in enumerate(self._customers_versus_products_table):
-			self._precalculated_magnitudes[i] = np.sqrt(np.sum(row))
+			self._precalculated_magnitudes[i] = np.sqrt(np.sum(row**2))
 
 
 	def _calculate_similarity_coefficient(self, customer1, customer2):
@@ -98,7 +93,6 @@ class TrustBasedFilterer(object):
 				similarity_coefficient = self._calculate_similarity_coefficient(i, j)
 
 				self._similarity_matrix[i][j] = self._similarity_matrix[j][i] = similarity_coefficient
-
 
 		self._similarity_matrix *= self._graph._customer_filterer_matrix
 

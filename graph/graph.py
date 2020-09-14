@@ -1,23 +1,19 @@
 import numpy as np
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import dijkstra
-
-from tacorec.config.config_parser import ConfigParser
+from distance_weighted_recommender.config.parser import Parser
 
 class Graph(object):
 
 	def __init__(self, transactions):
 
-		config = ConfigParser("tacorec.toml").load()
+		config = Parser("config.toml").load()
 
 		self._max_distance = \
 			config["graph"]["max_distance"]
 
 		self._transactions = transactions
 
-		self._create_adjacency_matrix()
-		self._create_distance_matrix()
-		self._create_customer_filterer_matrix()
 		self._create_customer_trust_matrix()
 
 	def _create_adjacency_matrix(self):
@@ -35,6 +31,8 @@ class Graph(object):
 
 	def _create_distance_matrix(self):
 
+		self._create_adjacency_matrix()
+
 		self._adjacency_matrix = csr_matrix(self._adjacency_matrix)
 		self._distance_matrix = \
 			dijkstra(csgraph=self._adjacency_matrix, directed=False, return_predecessors=False)
@@ -46,6 +44,9 @@ class Graph(object):
 
 
 	def _create_customer_trust_matrix(self):
+
+		self._create_distance_matrix()
+		self._create_customer_filterer_matrix()
 
 		self._customer_trust_matrix = \
 			np.reciprocal(self._distance_matrix, out=np.zeros_like(self._distance_matrix), where=self._distance_matrix!=0)

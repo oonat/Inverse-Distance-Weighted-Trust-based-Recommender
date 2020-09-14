@@ -1,4 +1,0 @@
-from tacorec.distance_oriented_recommender.tester.trust_based_recommender import TrustBasedRecommender
-
-recommender = TrustBasedRecommender()
-recommender.calculate_accuracy()
