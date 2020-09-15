@@ -16,6 +16,7 @@ class Graph(object):
 
 		self._create_customer_trust_matrix()
 
+
 	def _create_adjacency_matrix(self):
 
 		self._adjacency_matrix = np.zeros(
@@ -23,10 +24,12 @@ class Graph(object):
 			dtype=np.bool,
 		)
 
-		for i in range(self._transactions.shape[0]):
-			for j in range(i + 1, self._transactions.shape[0]):
-				if np.sum(np.logical_and(self._transactions[i], self._transactions[j])) != 0:
-					self._adjacency_matrix[i][j] = self._adjacency_matrix[j][i] = True
+		list_of_neighbour_customers = [ np.nonzero(t)[0] for t in self._customers_versus_products_table.T ]
+
+		for neighbour_customers in list_of_neighbour_customers:
+			for i in range(neighbour_customers.shape[0]):
+				self._adjacency_matrix[neighbour_customers[i], neighbour_customers[i+1:]] = \
+					self._adjacency_matrix[neighbour_customers[i+1:], neighbour_customers[i]] = True
 
 
 	def _create_distance_matrix(self):
@@ -35,12 +38,17 @@ class Graph(object):
 
 		self._adjacency_matrix = csr_matrix(self._adjacency_matrix)
 		self._distance_matrix = \
-			dijkstra(csgraph=self._adjacency_matrix, directed=False, return_predecessors=False)
+			dijkstra(csgraph=self._adjacency_matrix, 
+					directed=False, 
+					return_predecessors=False, 
+					unweighted=True,
+					limit=self._max_distance)
 
 
 	def _create_customer_filterer_matrix(self):
 
-		self._customer_filterer_matrix = self._distance_matrix <= self._max_distance
+		self._customer_filterer_matrix = \
+			(self._distance_matrix <= self._max_distance) & (self._distance_matrix > 0)
 
 
 	def _create_customer_trust_matrix(self):
