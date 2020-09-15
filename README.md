@@ -11,5 +11,7 @@ About the Dataset
 
 </center>
 
-Sparsity of the customer versus product matrix: 0.9999848095622629
-Sparsity of the customer versus product matrix after filtering (filtering_threshold = 2): 0.9980812484568475
+|               | Sparsity      |
+| ------------- |:-------------:|
+| no network filtering     | 99.99848095622629 %		|
+| filtering_threshold = 2       | 99.80812484568475 %       |
