@@ -1,7 +1,7 @@
 import contextlib   # closing()
 
-from distance_weighted_recommender.database import neo4j_interface
-from distance_weighted_recommender.trust_based_recommendation.trust_based_filterer \
+from database import neo4j_interface
+from trust_based_recommendation.trust_based_filterer \
 	import TrustBasedFilterer
 
 

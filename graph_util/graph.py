@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import dijkstra
-from distance_weighted_recommender.config.parser import Parser
+from config.parser import Parser
 
 class Graph(object):
 

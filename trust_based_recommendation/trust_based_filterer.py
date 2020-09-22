@@ -1,8 +1,8 @@
 import numpy as np
-from distance_weighted_recommender.config.parser import Parser
-from distance_weighted_recommender.network_filtering.network_filterer \
+from config.parser import Parser
+from network_filtering.network_filterer \
 	import NetworkFilterer
-from distance_weighted_recommender.graph import Graph
+from graph_util.graph import Graph
 
 
 class TrustBasedFilterer(object):

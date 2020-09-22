@@ -1,4 +1,4 @@
-from distance_weighted_recommender.trust_based_recommendation.trust_based_recommender \
+from trust_based_recommendation.trust_based_recommender \
 	import TrustBasedRecommender
 
 recommender = TrustBasedRecommender()

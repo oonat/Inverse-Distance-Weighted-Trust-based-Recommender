@@ -1,5 +1,5 @@
 import neo4j
-from distance_weighted_recommender.config.parser import Parser
+from config.parser import Parser
 
 
 class Interface():
