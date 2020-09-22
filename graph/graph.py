@@ -24,7 +24,7 @@ class Graph(object):
 			dtype=np.bool,
 		)
 
-		list_of_neighbour_customers = [ np.nonzero(t)[0] for t in self._customers_versus_products_table.T ]
+		list_of_neighbour_customers = [ np.nonzero(t)[0] for t in self._transactions.T ]
 
 		for neighbour_customers in list_of_neighbour_customers:
 			for i in range(neighbour_customers.shape[0]):
@@ -44,19 +44,26 @@ class Graph(object):
 					unweighted=True,
 					limit=self._max_distance)
 
+		self._distance_matrix[~np.isfinite(self._distance_matrix)] = 0
 
+	"""
 	def _create_customer_filterer_matrix(self):
 
 		self._customer_filterer_matrix = \
 			(self._distance_matrix <= self._max_distance) & (self._distance_matrix > 0)
-
+	"""
 
 	def _create_customer_trust_matrix(self):
 
 		self._create_distance_matrix()
+
+		"""
 		self._create_customer_filterer_matrix()
+		"""
 
 		self._customer_trust_matrix = \
 			np.reciprocal(self._distance_matrix, out=np.zeros_like(self._distance_matrix), where=self._distance_matrix!=0)
 
+		"""
 		self._customer_trust_matrix *= self._customer_filterer_matrix
+		"""

@@ -1,7 +1,7 @@
 import os
 import toml
 
-class ConfigParser():
+class Parser():
 
     def __init__(self, config_file):
 
