@@ -5,7 +5,7 @@ from test.graph import Graph
 
 class TrustBasedFilterer(object):
 
-	def __init__(self, sales):
+	def __init__(self, sales, similarity_matrix):
 
 		config = Parser("config.toml").load()
 
@@ -19,11 +19,11 @@ class TrustBasedFilterer(object):
 		self._customers = np.unique(self._sales[:, 0])
 		self._products = np.unique(self._sales[:, 1])
 
+		self._similarity_matrix = np.array(similarity_matrix, dtype=np.float32)
+
 		self._create_customers_versus_products_table()
 		
-		self._create_bool_table()
-
-		self._graph = Graph(self._bool_table)
+		self._graph = Graph(self._customers_versus_products_table)
 
 		self._create_weight_matrix()
 
@@ -40,15 +40,7 @@ class TrustBasedFilterer(object):
 			self._sales[:, 1],
 		] = self._sales[:, 2]
 
-
-	def _create_bool_table(self):
-
-		self._bool_table = np.zeros(
-			(self._customers.shape[0], self._products.shape[0]),
-			dtype=np.bool,
-		)
-		self._bool_table[np.nonzero(self._customers_versus_products_table)] = True
-
+	"""
 
 	def _precalculate_magnitudes(self):
 
@@ -102,10 +94,13 @@ class TrustBasedFilterer(object):
 
 		self._similarity_matrix[~np.isfinite(self._graph._distance_matrix)] = 0
 
+	"""
 
 	def _create_weight_matrix(self):
 
+		"""
 		self._create_similarity_matrix()
+		"""
 
 		self._weight_matrix = \
 			self._weight_ratio*self._graph._customer_trust_matrix + (1-self._weight_ratio)*self._similarity_matrix

@@ -93,10 +93,6 @@ class TrustBasedFilterer(object):
 				similarity_coefficient = self._calculate_similarity_coefficient(i, j)
 				self._similarity_matrix[i][j] = self._similarity_matrix[j][i] = similarity_coefficient
 
-		"""
-		self._similarity_matrix *= self._graph._customer_filterer_matrix
-		"""
-
 		self._similarity_matrix[~np.isfinite(self._graph._distance_matrix)] = 0
 
 	def _create_weight_matrix(self):
