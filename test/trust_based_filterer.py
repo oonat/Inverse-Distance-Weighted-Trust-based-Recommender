@@ -1,6 +1,6 @@
 import numpy as np
 from config.parser import Parser
-from test.graph import Graph
+from graph_util.graph import Graph
 
 
 class TrustBasedFilterer(object):

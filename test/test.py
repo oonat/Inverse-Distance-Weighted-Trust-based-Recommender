@@ -7,9 +7,9 @@ from surprise.model_selection import cross_validate
 
 class Distance_weighted_tbr(AlgoBase):
 
-	def __init__(self):
+	def __init__(self, sim_options={}):
 
-		AlgoBase.__init__(self)
+		AlgoBase.__init__(self, sim_options=sim_options)
 
 
 	def fit(self, trainset):

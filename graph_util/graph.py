@@ -1,7 +1,8 @@
 import numpy as np
 from config.parser import Parser
-from scipy.sparse.csgraph import dijkstra
+from scipy.sparse.csgraph import dijkstra, csgraph_from_dense
 from sklearn.metrics.pairwise import nan_euclidean_distances
+from math import sqrt
 
 class Graph(object):
 
@@ -24,7 +25,10 @@ class Graph(object):
 		if self._weighted_bool:
 
 			self._adjacency_matrix = nan_euclidean_distances(self._transactions, self._transactions, missing_values=0)
-			self._adjacency_matrix[np.isnan(self._adjacency_matrix)] = 0
+			"""
+			self._adjacency_matrix /= sqrt(self._transactions.shape[1])
+			self._adjacency_matrix[~np.isnan(self._adjacency_matrix)] += 1
+			"""
 
 		else:
 
@@ -45,12 +49,26 @@ class Graph(object):
 
 		self._create_adjacency_matrix()
 
-		self._distance_matrix = \
-			dijkstra(csgraph=self._adjacency_matrix, 
-					directed=False, 
-					return_predecessors=False, 
-					unweighted= False if self._weighted_bool else True,
-					limit=self._max_distance)
+		if self._weighted_bool:
+
+			adjacency_csgraph = csgraph_from_dense(self._adjacency_matrix, null_value=np.nan)
+
+			self._distance_matrix = \
+				dijkstra(csgraph=adjacency_csgraph,
+						directed=False, 
+						return_predecessors=False, 
+						unweighted= False,
+						limit=self._max_distance)
+
+		else:
+
+			self._distance_matrix = \
+				dijkstra(csgraph=self._adjacency_matrix,
+						directed=False, 
+						return_predecessors=False, 
+						unweighted= True,
+						limit=self._max_distance)
+
 
 		self._distance_matrix[~np.isfinite(self._distance_matrix)] = 0
 
