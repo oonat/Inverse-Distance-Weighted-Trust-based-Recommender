@@ -22,9 +22,7 @@ class TrustBasedFilterer(object):
 		self._similarity_matrix = np.array(similarity_matrix, dtype=np.float32)
 
 		self._create_customers_versus_products_table()
-		
 		self._graph = Graph(self._customers_versus_products_table)
-
 		self._create_weight_matrix()
 
 

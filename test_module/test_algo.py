@@ -1,11 +1,9 @@
 import numpy as np
-from trust_based_filterer import TrustBasedFilterer
-
-from surprise import AlgoBase, PredictionImpossible, Dataset
-from surprise.model_selection import cross_validate
+from test_module.trust_based_filterer import TrustBasedFilterer
+from surprise import AlgoBase, PredictionImpossible
 
 
-class Distance_weighted_tbr(AlgoBase):
+class Inverse_distance_weighted_tbr(AlgoBase):
 
 	def __init__(self, sim_options={}):
 
@@ -44,9 +42,3 @@ class Distance_weighted_tbr(AlgoBase):
 		estimation = 0 if denominator == 0 else float(numerator)/denominator 
 
 		return estimation
-
-
-data = data = Dataset.load_builtin('ml-100k')
-algo = Distance_weighted_tbr()
-
-cross_validate(algo, data, cv=5, verbose=True)

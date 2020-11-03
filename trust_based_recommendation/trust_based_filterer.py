@@ -28,7 +28,7 @@ class TrustBasedFilterer(object):
 
 
 		self._create_customers_versus_products_table()
-		self._graph = Graph(self._customers_versus_products_table)
+		self._graph = Graph(self._customers_versus_products_table, weighted=False)
 		self._create_weight_matrix()
 
 
@@ -76,6 +76,7 @@ class TrustBasedFilterer(object):
 		return similarity_coefficient
 
 
+	""" needs refactoring """
 	def _create_similarity_matrix(self):
 
 		self._precalculate_magnitudes()
@@ -94,6 +95,7 @@ class TrustBasedFilterer(object):
 				self._similarity_matrix[i][j] = self._similarity_matrix[j][i] = similarity_coefficient
 
 		self._similarity_matrix[~np.isfinite(self._graph._distance_matrix)] = 0
+
 
 	def _create_weight_matrix(self):
 
@@ -120,7 +122,7 @@ class TrustBasedFilterer(object):
 
 		return coefficient_list
 
-
+	""" argpartition can be used """
 	def make_recommendation_to_customer(self, customer):
 
 		products_with_coefficients = self._calculate_product_coefficients(customer)

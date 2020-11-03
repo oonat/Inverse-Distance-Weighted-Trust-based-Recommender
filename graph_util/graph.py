@@ -15,20 +15,20 @@ class Graph(object):
 
 		self._transactions = transactions
 
-		self._weighted_bool = weighted
+		self._weighted = weighted
 
 		self._create_customer_trust_matrix()
 
 
 	def _create_adjacency_matrix(self):
 
-		if self._weighted_bool:
+		if self._weighted:
 
 			self._adjacency_matrix = nan_euclidean_distances(self._transactions, self._transactions, missing_values=0)
 			"""
 			self._adjacency_matrix /= sqrt(self._transactions.shape[1])
-			self._adjacency_matrix[~np.isnan(self._adjacency_matrix)] += 1
 			"""
+			self._adjacency_matrix[~np.isnan(self._adjacency_matrix)] += 1
 
 		else:
 
@@ -49,15 +49,13 @@ class Graph(object):
 
 		self._create_adjacency_matrix()
 
-		if self._weighted_bool:
+		if self._weighted:
 
 			adjacency_csgraph = csgraph_from_dense(self._adjacency_matrix, null_value=np.nan)
 
 			self._distance_matrix = \
 				dijkstra(csgraph=adjacency_csgraph,
-						directed=False, 
-						return_predecessors=False, 
-						unweighted= False,
+						directed=False,
 						limit=self._max_distance)
 
 		else:
@@ -65,13 +63,10 @@ class Graph(object):
 			self._distance_matrix = \
 				dijkstra(csgraph=self._adjacency_matrix,
 						directed=False, 
-						return_predecessors=False, 
 						unweighted= True,
 						limit=self._max_distance)
 
-
 		self._distance_matrix[~np.isfinite(self._distance_matrix)] = 0
-
 
 
 	def _create_customer_trust_matrix(self):
