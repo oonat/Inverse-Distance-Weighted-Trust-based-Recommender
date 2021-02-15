@@ -1,7 +1,7 @@
 import contextlib   # closing()
 
-from database import neo4j_interface
-from trust_based_recommendation.trust_based_filterer \
+import neo4j_interface
+from trust_based_filterer \
 	import TrustBasedFilterer
 
 
@@ -39,3 +39,8 @@ class TrustBasedRecommender(object):
 			product_id=product_id, 
 			recommendation_coefficient=recommendation_coefficient,
 			)
+
+
+if __name__ == '__main__':
+	recommender = TrustBasedRecommender()
+	recommender.make_recommendations()

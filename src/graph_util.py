@@ -1,5 +1,5 @@
 import numpy as np
-from config.parser import Parser
+from toml_parser import Parser
 from scipy.sparse.csgraph import dijkstra, csgraph_from_dense
 from sklearn.metrics.pairwise import nan_euclidean_distances
 from math import sqrt

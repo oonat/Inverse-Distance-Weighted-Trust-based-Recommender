@@ -1,6 +1,7 @@
 import numpy as np
-from test_module.trust_based_filterer import TrustBasedFilterer
-from surprise import AlgoBase, PredictionImpossible
+from trust_based_filterer import TrustBasedFilterer
+from surprise import Dataset, AlgoBase, PredictionImpossible
+from surprise.model_selection import cross_validate
 
 
 class Inverse_distance_weighted_tbr(AlgoBase):
@@ -42,3 +43,10 @@ class Inverse_distance_weighted_tbr(AlgoBase):
 		estimation = 0 if denominator == 0 else float(numerator)/denominator 
 
 		return estimation
+
+
+if __name__ == '__main__':
+	data = Dataset.load_builtin('ml-100k')
+	sim_options = {'name': 'cosine',}
+	algo = Inverse_distance_weighted_tbr(sim_options=sim_options)
+	cross_validate(algo, data, cv=5, verbose=True)

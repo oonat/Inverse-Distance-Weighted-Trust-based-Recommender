@@ -1,8 +1,8 @@
 import numpy as np
-from config.parser import Parser
-from network_filtering.network_filterer \
+from toml_parser import Parser
+from network_filterer \
 	import NetworkFilterer
-from graph_util.graph import Graph
+from graph_util import Graph
 
 
 class TrustBasedFilterer(object):

@@ -1,5 +1,5 @@
 import neo4j
-from config.parser import Parser
+from toml_parser import Parser
 
 
 class Interface():

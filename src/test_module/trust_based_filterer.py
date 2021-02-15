@@ -1,6 +1,9 @@
+import sys 
+sys.path.append('..')
+
 import numpy as np
-from config.parser import Parser
-from graph_util.graph import Graph
+from toml_parser import Parser
+from graph_util import Graph
 
 
 class TrustBasedFilterer(object):
